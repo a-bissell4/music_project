@@ -1,0 +1,60 @@
+/*SQL insert into "sqltopy.py"
+ Idea for how the code might actually be executed:
+    we want a loop that will cycle through the compiled list of songs we've scrapped.
+        SQL doesn't seem to offer a for loop data structure so a while loop will have to be used.
+    within the loop itself, SQL will be executed to add respective data to the Songs and Popularity relation tables.
+    will also need to accomodate for error handling; can't have cases where duplicate tuples come up.*/
+
+/*The following is copied from the "migration.txt" file on the repo. 
+    how the Song and Popularity tables are being created.*/
+-- ************************************** `Songs`
+
+CREATE TABLE songs(
+    id     SERIAL NOT NULL ,
+    title  text NOT NULL ,
+    artist text NOT NULL ,
+    PRIMARY KEY (id),
+    UNIQUE(title, artist)
+);
+-- ************************************** `popularity`
+
+CREATE TABLE popularity(
+    songId integer REFERENCES Songs(id),
+    year   integer NOT NULL ,
+    rank   integer NOT NULL ,
+    PRIMARY KEY (songId, year),
+    UNIQUE(songId, year),
+    UNIQUE(year, rank)
+);
+
+/*The while loop.*/
+WHILE(SCRAPPED_SONGS.index) <= 100     /*need a way to instantiate/access the indexes of the table(?)*/
+BEGIN
+    /*this would be where the SQL code for inserting the songs into the tables would go.*/
+    INSERT INTO songs(title, artist)
+        VALUES ('SELECT DSS.title, DSS.artist FROM SCRAPPED_SONGS DSS')
+    INSERT INTO popularity(songId, year, song_rank)
+        VALUES ('SELECT DSS.id, DSS.year, DSS.song_rank FROM SCRAPPED_SONGS DSS') 
+                
+    /*now we add error handling.*/
+    /*error handling for song table.*/
+    /*IF(<songtitle & artist combo from data scrapped table>) = (<songtitle and artist combo from the songs table>)
+        NEXT
+    ELSE
+        IF(<songtitle from datascrapped table>) = (<songtitle from the songs table>)
+            NEXT*/
+    IF('SELECT DSS.title, DSS.artist FROM SCRAPPED_SONGS DSS') = ('SELECT ST.title, ST.artist FROM songs ST')
+        NEXT
+    ELSE
+        IF('SELECT DSS.title FROM SCRAPPED_SONGS DSS') = ('SELECT ST.title FROM SONGS_TABLE ST')
+            NEXT
+    /*error handling for popularity table.*/
+    /*IF(<year & rank combo from datascrapped table>) = (<year & rank combo from popularity table>)
+        NEXT*/
+    IF('SELECT DSS.year, DSS.song_rank FROM SCRAPPED_SONGS DSS') = ('SELECT PT.year, PT.song_rank FROM songs ST')
+        NEXT
+END
+
+/*And at the end of it all there should be a way to transfer/connect this data to the main database.*/
+
+/*might be able to use the DISTINCT() function to help with error handling*/
