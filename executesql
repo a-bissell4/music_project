@@ -1,3 +1,28 @@
+**NEW STUFF FOR CURSOR LOOP**
+#below is the loop insert for the cursor execute. 
+
+#billboarddata = [..., ..., ..., ...] #this is just to reference the scrapped billboard data
+    #for x in billboarddata:
+        #cur.execute("INSERT INTO songs(title, artist) VALUES ('"+billboarddata[x].song+"', '"+billboarddata[x].artist+"');")
+        #cur.execute("INSERT INTO popularity(songId, year, rank) VALUES 
+                    #('"+billboarddata[x].songId+"', '"+billboarddata[x].year+"', '"+billboarddata[x].rank+"');")
+        #consider a nested loop for error handling?
+
+        #**theoretical songs table error handling**
+        #if((<songtitle & artist combo from data scrapped table>) = (<songtitle and artist combo from the songs table>) or
+        #   (<songtitle from datascrapped table>) = (<songtitle from the songs table>)):
+        #   continue
+
+        #**theoretical popularity table error handling**
+        #if((<year & rank combo from datascrapped table>) = (<year & rank combo from popularity table>)):
+        #   continue
+
+        #need to find a way to incorporate these conditions into the loop so that we don't end up with duplicate
+        #tuples in our songs and popularity tables.
+
+
+
+
 /*SQL insert into "sqltopy.py"
  Idea for how the code might actually be executed:
     we want a loop that will cycle through the compiled list of songs we've scrapped.
